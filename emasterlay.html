@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Event Master</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		
+		<!-- Omlet  -->
+		<script type = "text/javascript" src = "https://omlet.me/a/js/omlet.js"></script>
+ 		
+<!-- 		<script>
+			$(document).on("mobileinit",function() {
+			$.mobile.autoInitializePage = false;
+			}); 
+		</script> -->
+		
+		<!-- Official Jquery Mobile  -->
+		<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.2/jquery.mobile-1.4.2.min.css">
+		<script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+		<script src="http://code.jquery.com/mobile/1.4.2/jquery.mobile-1.4.2.min.js"></script>	
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+		
+		<!-- Google Places API -->
+		<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places"></script>
+		
+		<!-- Styles -->
+		<!-- <link rel="stylesheet" href="https://mobi-summer-evan.s3.amazonaws.com/Styles/Blufuego.css" />
+		<link rel="stylesheet" href="https://mobi-summer-evan.s3.amazonaws.com/Styles/Blufuego.min.css" />		 -->
+		
+		<!-- Link to the JavaScript File -->
+		<script type = 'text/javascript' src= 'emasterjs.js'></script>	
+    </head>
+    <body>
+		<!-- <div data-role = "page" id = "landing">
+			<div data-role = "content">
+ 				<h1 id="title">Event Master</h1>
+				<button class="ui-btn" id="next">Next</button>
+				<div id="logger"></div>
+			</div> -->
+		<!-- </div> -->
+		<div data-role = "page" id = "pageone">
+			<div data-role = "content">
+					<div id="inputs">
+						<form name="input" action="" method="post">
+							<ul data-role = "listview" data-inset = "true">
+								<li>
+									<input type="text" name="eventname" id = "name" data-mini = "true" placeholder="Event name" data-clear-btn = "true">
+								</li>
+								<li>
+									<textarea name="Details" id="comments" data-mini = "true" placeholder = "Details" data-clear-btn = "true"></textarea>
+								</li>
+							</ul>
+						
+							
+							<ul data-role = "listview" data-inset = "true">
+								<li>
+									<a href ="#time">
+									<h2 id = "asdf">Date and Time</h2>
+									
+									</a>
+								</li>
+								<li>
+									<a href = "#locationpage">
+									<h2>Location</h2>
+									<div id= "placey"></div>
+									</a>
+								</li>
+							</ul>
+						</form>
+					</div>
+					<div>
+						<form id="options">
+							<input type="submit" value="Submit" id = "share">
+						</form>
+					</div>
+				</div>
+			</div>
+		
+		<div data-role = "page" id = "time">
+			<div data-role = "main" class = "ui-content">
+				<ul data-role = "listview" data-inset = "true">
+					<li>Start <input type="datetime-local" id = "start"></li>
+					<li>End <input type ="datetime-local" id = "end"></li>
+				</ul>
+				<a href="#pageone" class="ui-btn" id ="returntime">Back</a>
+			</div>
+		</div>
+		
+		<div data-role = "page" id = "locationpage">
+			<div data-role = "main" class = "ui-content">
+				<input id="pac-input" class="controls" type="text" placeholder="Enter a location">	
+				<a href="#pageone" class="ui-btn">Back</a>
+			</div>
+		</div>
+		
+    </body>
+</html>
