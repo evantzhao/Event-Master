@@ -1,4 +1,4 @@
-Event-Master
+Event-Master 2014
 ============
 
 An event planner optimized for Omlet. Written in HTML. 
