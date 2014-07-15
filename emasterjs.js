@@ -1,33 +1,14 @@
 //////////////////////////////
 ///// Google Places    ///////
 //////////////////////////////
+
 function initialize() {
 
-  var input = /** @type {HTMLInputElement} */(
-      document.getElementById('pac-input'));
+    var input = document.getElementById('pac-input');
+    var autocomplete = new google.maps.places.Autocomplete(input, options);
+ }
 
-  var types = document.getElementById('type-selector');
-
-  var autocomplete = new google.maps.places.Autocomplete(input);
-
-  google.maps.event.addListener(autocomplete, 'place_changed', function() {
-    var place = autocomplete.getPlace();
-    if (!place.geometry) {
-      return;
-    }
-
-    var address = '';
-    if (place.address_components) {
-      address = [
-        (place.address_components[0] && place.address_components[0].short_name || ''),
-        (place.address_components[1] && place.address_components[1].short_name || ''),
-        (place.address_components[2] && place.address_components[2].short_name || '')
-      ].join(' ');
-    }
-
-  });
-}
-
+//Load Data from shared RDL
 function LoadData()
 {
 	document.getElementById('name').value = saving.name;
@@ -36,12 +17,6 @@ function LoadData()
 	document.getElementById('end').value = saving.end;
 	document.getElementById('comments').value = saving.details;
 	document.getElementById('pac-input').value = saving.place;
-}
-//Get the stupid time
-function timeywimey()
-{
-var date = new Date($('#start').val());
-console.log(date);
 }
 
 //Sharing RDL Function
@@ -52,24 +27,192 @@ function setUpShare()
 	});
 }
 
-function setTime( msgTxt )
+function refreshtime( msgTxt )
 {
-	var msgDiv = document.getElementById('dating');
+	var msgDiv = document.getElementById('refreshtime');
 	msgDiv.innerHTML = msgTxt;
+	document.getElementById('refreshtime').style.fontWeight = "200";
 }
 
-function updateTime()
+function timebreak( msgTxt )
 {
-	
-	$('#returntime').click(function(){
-		var date = new Date($('#start').val());
-		var newdate;
-		newdate = date.toDateString();
-		console.log(date);
-		$('#asdf').after(newdate);
-	});
+	var msgDiv = document.getElementById('timebreak');
+	msgDiv.innerHTML = msgTxt;
+	document.getElementById('timebreak').style.fontWeight = "200";
 }
 
+//Update time function
+function datefunc() {
+    var start = new Date (document.getElementById("start").value);
+    var end = new Date(document.getElementById("end").value);
+
+	if (start == "" && end == ""){
+		return;
+	} else {
+
+		//Converting the ISO 8601 to Human Readable Text. This gathers each of the time dates' elements, and then sets innerHTML equal to those elements.
+		var smonth = start.getMonth();
+		var sdate = start.getDate();
+		var shour = start.getUTCHours();
+		var smin = start.getMinutes();
+		var sday = start.getDay();
+		var nday;
+		var pm;
+
+		//End date. Same process as above
+		var emonth = end.getMonth();
+		var edate = end.getDate();
+		var ehour = end.getUTCHours();
+		var emin = end.getMinutes();
+		var eday = end.getDay();
+		var eday;
+		var am;
+
+		//Converting a 24 hour time to 12 hour time. For the starting time only, so expect to see a duplicate.
+		if(shour > 12)
+		{
+			var nhour;
+			nhour = (shour-12);
+			pm = "pm";
+		}
+		else
+		{
+			nhour = shour;
+			pm = "am";
+		}
+
+		//Preventing the minutes time from dropping the zero in front. 
+
+		if(emin < 10)
+		{
+			var nmin;
+			nmin = ("0" + emin);
+		}
+		else
+		{
+			nmin = emin;
+		}
+
+		//Preventing the minutes time from dropping the zero in front. 
+
+		if(smin < 10)
+		{
+			var pmin;
+			pmin = ("0" + smin);
+		}
+		else
+		{
+			pmin = smin;
+		}
+
+		//Converting a 24 hour time to 12 hour time. For the ending time only. 
+		if(ehour > 12)
+		{
+			var phour;
+			phour = (ehour-12);
+			am = "pm";
+		}
+		else
+		{
+			phour = shour;
+			am = "am";
+		}
+
+
+
+		//Converting the integer return to a day( in text). For starting times only.
+		if(sday == 1)
+		{
+			nday = "Monday";
+		}
+		if(sday == 2)
+		{
+			nday = "Tuesday";
+		}
+		if(sday == 3)
+		{
+			nday = "Wednesday";
+		}
+		if(sday == 4)
+		{
+			nday = "Thursday";
+		}
+		if(sday == 5)
+		{
+			nday = "Friday";
+		}
+		if(sday == 6)
+		{
+			nday ="Saturday";
+		}
+		if(sday == 0)
+		{
+			nday = "Sunday";
+		}
+		else
+		{
+			sday = nday;
+		}
+
+		//Converting the integers into days. For ending times only. 
+		if(eday == 1)
+		{
+			pday = "Monday";
+		}
+		if(eday == 2)
+		{
+			pday = "Tuesday";
+		}
+		if(eday == 3)
+		{
+			pday = "Wednesday";
+		}
+		if(eday == 4)
+		{
+			pday = "Thursday";
+		}
+		if(eday == 5)
+		{
+			pday = "Friday";
+		}
+		if(eday == 6)
+		{
+			pday ="Saturday";
+		}
+		if(eday == 0)
+		{
+			pday = "Sunday";
+		}
+		else
+		{
+			eday = pday;
+		}
+
+		refreshtime("Start: " + nday + ", " + smonth + "/" + sdate + " @ " + nhour + ":" + pmin + " " + pm);
+		timebreak("End: " + pday + ", " + emonth + "/" + edate + " @ " + phour + ":" + nmin + ' ' + am );
+	}
+}
+
+//Location logging. 
+function lokitime( msgTxt )
+{
+	var msgDiv = document.getElementById('lokiplace');
+	msgDiv.innerHTML = msgTxt;
+	document.getElementById('lokiplace').style.fontWeight = "200";
+}
+
+function lokifunc()
+{
+	var loki = document.getElementById('pac-input').value; 
+	if(loki.length > 10) 
+	{
+		loki = loki.substring(0,30);
+	}
+	lokitime(loki + "...");
+}
+
+
+//Sharing the game function. Saving data. 
 function ShareGame(event)
 {
 	var saving = {
@@ -98,8 +241,6 @@ function ShareGame(event)
 	}
 }
 
-//Global Variables
-
 Omlet.ready(function() {
 	var omletPackage = Omlet.getPasteboard();
 
@@ -118,5 +259,4 @@ $(document).ready(function(){
 	setUpShare();
 	// window.location.hash = '#landing';
 	// $.mobile.initializePage();
-	updateTime();
 });

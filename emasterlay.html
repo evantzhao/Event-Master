@@ -4,20 +4,22 @@
         <title>Event Master</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-		
-		<!-- Omlet  -->
-		<script type = "text/javascript" src = "https://omlet.me/a/js/omlet.js"></script>
- 		
+		 		
 <!-- 		<script>
 			$(document).on("mobileinit",function() {
 			$.mobile.autoInitializePage = false;
 			}); 
 		</script> -->
+
+		<!-- Omlet  -->
+		<script type = "text/javascript" src = "https://omlet.me/a/js/omlet.js"></script>
 		
 		<!-- Official Jquery Mobile  -->
-		<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.2/jquery.mobile-1.4.2.min.css">
+		<link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jquerymobile/1.4.3/jquery.mobile.min.css" />
+		<script src="//ajax.googleapis.com/ajax/libs/jquerymobile/1.4.3/jquery.mobile.min.js"></script>
 		<script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
 		<script src="http://code.jquery.com/mobile/1.4.2/jquery.mobile-1.4.2.min.js"></script>	
+		<!-- jQuery -->
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 		
 		<!-- Google Places API -->
@@ -29,6 +31,7 @@
 		
 		<!-- Link to the JavaScript File -->
 		<script type = 'text/javascript' src= 'emasterjs.js'></script>	
+
     </head>
     <body>
 		<!-- <div data-role = "page" id = "landing">
@@ -55,14 +58,15 @@
 							<ul data-role = "listview" data-inset = "true">
 								<li>
 									<a href ="#time">
-									<h2 id = "asdf">Date and Time</h2>
-									
+									<h2>Date and Time</h2>
+									<div id="refreshtime"></div>
+									<div id="timebreak"></div>
 									</a>
 								</li>
 								<li>
 									<a href = "#locationpage">
 									<h2>Location</h2>
-									<div id= "placey"></div>
+									<div id= "lokiplace"></div>
 									</a>
 								</li>
 							</ul>
@@ -79,17 +83,18 @@
 		<div data-role = "page" id = "time">
 			<div data-role = "main" class = "ui-content">
 				<ul data-role = "listview" data-inset = "true">
-					<li>Start <input type="datetime-local" id = "start"></li>
-					<li>End <input type ="datetime-local" id = "end"></li>
+					<li><b>Start</b><input type="datetime-local" id = "start"></li>
+
+					<li> <b>End</b> <input type ="datetime-local" id = "end"></li>
 				</ul>
-				<a href="#pageone" class="ui-btn" id ="returntime">Back</a>
+				<a href="#pageone" class="ui-btn" id ="returntime" onclick=datefunc()>Back</a>
 			</div>
 		</div>
 		
 		<div data-role = "page" id = "locationpage">
 			<div data-role = "main" class = "ui-content">
-				<input id="pac-input" class="controls" type="text" placeholder="Enter a location">	
-				<a href="#pageone" class="ui-btn">Back</a>
+				<textarea id="pac-input" class="controls" type="text" placeholder="Enter a location"></textarea>
+				<a href="#pageone" class="ui-btn" onclick = lokifunc()>Back</a>
 			</div>
 		</div>
 		
