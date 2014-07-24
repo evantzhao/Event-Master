@@ -1,22 +1,181 @@
+//Global Variables for Keeping track of the guest list.
+var go = [0,0];
+var maybe = ["oia9th3erg"];
+var no = ["aoh0wjg0ewj"]; 
+
+//Shared Document API
+
+function Initializing(old, params) {
+	return params;
+}
+
+function Update(old, params) {
+	old.go = params["go"];
+	return old;
+	console.log("Updating!");
+}
+
+function InitialDocument() {
+	var initValues = {
+		"go": "",
+	};
+	return initValues;
+}
+
+function DocumentCreated(doc) {
+  	console.log("Document has been created.");
+}
+
+function ReceiveUpdate(doc) {
+	myDoc = doc;
+	for( key in myDoc)
+	{
+		console.log(key);
+	}
+
+	console.log("go: " + myDoc["go"]);
+	go = JSON.parse(myDoc["go"]);
+
+	refreshData();
+	alert("I received an update!");
+}
+
+function DidNotReceiveUpdate(doc) {
+console.log("I did not receive an update");
+}
+
+//////////////////////////////
+///// Framework Code   ///////
+//////////////////////////////
+
+var documentApi;
+var myDoc;
+var myDocId = null;
+
+function watchDocument(docref, OnUpdate) {
+documentApi.watch(docref, function(updatedDocRef) {
+	if (docref != myDocId) {
+		console.log("Wrong document!!");
+	} else {
+	documentApi.get(docref, OnUpdate);
+    	}
+    }, function(result) {
+    	var timestamp = result.Expires;
+    	var expires = timestamp - new Date().getTime();
+    	var timeout = 0.8 * expires;
+    	setTimeout(function() {
+    		watchDocument(docref, OnUpdate);
+    	}, timeout);
+    }, Error);
+}
+
+function initDocument() {
+	if (Omlet.isInstalled()) {
+	    documentApi = Omlet.document;
+	    _loadDocument();
+	}
+}
+
+function hasDocument() {
+	if( myDocId === null )
+	{
+		return false;
+	}
+	else
+	{
+		return true;
+	}
+}
+
+function _loadDocument() {
+  	if (hasDocument()) {
+  		console.log("...Loading Document");
+    	documentApi.get(myDocId, ReceiveUpdate);
+    	watchDocument(myDocId, ReceiveUpdate);
+    } else {
+    	console.log("...Creating Document");
+    	documentApi.create(function(d) {
+      	myDocId = d.Document;
+      	documentApi.update(myDocId, Initializing, InitialDocument(), 
+      		function() {
+      			documentApi.get(myDocId, DocumentCreated);
+      		}, function(e) {
+      			alert("error: " + JSON.stringify(e));
+      		});
+      	watchDocument(myDocId, ReceiveUpdate);
+      }, function(e) {
+      	alert("error: " + JSON.stringify(e));
+      });
+    }
+}
+
+//Global Variables for Google Maps
+var maps;
+var geocoder;
+
 //////////////////////////////
 ///// Google Places    ///////
 //////////////////////////////
 
 function initialize() {
 
-    var input = document.getElementById('pac-input');
-    var autocomplete = new google.maps.places.Autocomplete(input, options);
- }
+ var input = document.getElementById('pac-input');
+ var autocomplete = new google.maps.places.Autocomplete(input, options);
+
+  var mapOptions = {
+    zoom: 13,
+    center: new google.maps.LatLng(37.785285, -122.429177),
+    disableDefaultUI: true,
+  };
+ 
+map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+geocoder = new google.maps.Geocoder();
+
+}
+
+function codeAddress()
+{
+	var sAddress = saving.place;
+	geocoder.geocode( { 'address': sAddress}, function(results, status) { 
+		if( status == google.maps.GeocoderStatus.OK){
+			map.setCenter(results[0].geometry.location);
+			var marker = new google.maps.Marker({ 
+			map: map, 
+			position: results[0].geometry.location });
+		}
+		else{
+
+		}
+	});
+}
 
 //Load Data from shared RDL
 function LoadData()
 {
-	document.getElementById('name').value = saving.name;
-	document.getElementById('comments').value = saving.details;
-	document.getElementById('start').value = saving.start;
-	document.getElementById('end').value = saving.end;
-	document.getElementById('comments').value = saving.details;
-	document.getElementById('pac-input').value = saving.place;
+	// go = JSON.parse(saving.go);
+	// maybe = JSON.parse(saving.maybe);
+	// no = JSON.parse(saving.no);
+
+	//details(saving.details);
+	nama(saving.name);
+	host("Hosted by: " + saving.host);
+	rizi(saving.greetings);
+	wanle(saving.goodbye);
+	dizi(saving.place);
+	//Attending(JSON.parse(saving.go).length -1);
+	Attending(go.length-2);
+	atext("Attending");
+	//Maybe(JSON.parse(saving.maybe).length -1);
+	Maybe(maybe.length -1);
+	mtext("Maybe");
+	// Noped(JSON.parse(saving.no).length -1);
+	Noped(no.length-1);
+	ntext("Declined");
+}
+
+function handleClick() {
+	var goText = JSON.stringify(go);
+	documentApi.update( myDocId, Update, { 'go' : goText } , ReceiveUpdate, DidNotReceiveUpdate);
 }
 
 //Sharing RDL Function
@@ -25,6 +184,7 @@ function setUpShare()
 	$("#share").click(function(){
 		ShareGame();
 	});
+
 }
 
 function refreshtime( msgTxt )
@@ -118,8 +278,6 @@ function datefunc() {
 			am = "am";
 		}
 
-
-
 		//Converting the integer return to a day( in text). For starting times only.
 		if(sday == 1)
 		{
@@ -193,6 +351,86 @@ function datefunc() {
 	}
 }
 
+function coming()
+{
+	for(var e = maybe.length - 1; e >= 0; e--) {
+	 	if(viewerUser["name"] === maybe[e])
+	 	{
+    		if(maybe[e] === viewerUser["name"]) {
+        	maybe.splice(e, 1);
+     		}	
+	 	}
+	 }
+
+	for(var p = no.length - 1; p >= 0; p--) {
+	 	if(viewerUser["name"] === no[p])
+ 		{
+    		if(no[p] === viewerUser["name"]){
+        	no.splice(p, 1);
+     		}		
+	 	}
+	 }
+
+	 if(go.indexOf(viewerUser["name"]) == -1)
+	 	{
+	 		go[go.length] = viewerUser["name"];
+	 	}
+}
+
+function perhaps()
+{
+	for(var e = go.length - 1; e >= 0; e--) {
+		if(viewerUser["name"] === go[e])
+		{
+   				if(go[e] === viewerUser["name"]) {
+       			go.splice(e, 1);
+    			}
+		}
+	}
+
+	for(var p = no.length - 1; p >= 0; p--) {
+		if(viewerUser["name"] === no[p])
+		{
+   				if(no[p] === viewerUser["name"]) {
+       			no.splice(p, 1);
+    			}
+		}
+	}
+
+	if(maybe.indexOf(viewerUser["name"]) == -1)
+	{
+		maybe[maybe.length] = viewerUser["name"];
+	}
+
+}
+
+function nope()
+{
+	for(var e = maybe.length - 1; e >= 0; e--) {
+		if(viewerUser["name"] === maybe[e])
+		{
+   			if(maybe[e] === viewerUser["name"]) {
+       		maybe.splice(e, 1);
+    		}
+		}
+	}
+
+	for(var p = go.length - 1; p >= 0; p--) {
+		if(viewerUser["name"] === go[p])
+		{
+   			if(go[p] === viewerUser["name"]) {
+       		go.splice(p, 1);
+    		}
+		}
+	}
+
+
+	if(no.indexOf(viewerUser["name"]) == -1){
+		no[no.length]= viewerUser["name"];
+	}
+	
+}
+
 //Location logging. 
 function lokitime( msgTxt )
 {
@@ -211,6 +449,111 @@ function lokifunc()
 	lokitime(loki + "...");
 }
 
+//Loading the Details.  
+function details( msgTxt )
+{
+	var msgDiv = document.getElementById('Testing');
+	msgDiv.innerHTML = msgTxt;
+	document.getElementById('Testing').style.fontWeight = "200";
+}
+
+//Loading the name
+function nama( msgTxt )
+{
+	var msgDiv = document.getElementById('nama');
+	msgDiv.innerHTML = msgTxt;
+	document.getElementById('nama').style.fontWeight = "200";
+}
+
+//Loading the Date
+function rizi( msgTxt )
+{
+	var msgDiv = document.getElementById('rizi');
+	msgDiv.innerHTML = msgTxt;
+	document.getElementById('rizi').style.fontWeight = "200";
+}
+
+//Loading the End Date
+function wanle( msgTxt )
+{
+	var msgDiv = document.getElementById('wanle');
+	msgDiv.innerHTML = msgTxt;
+	document.getElementById('wanle').style.fontWeight = "200";
+}
+
+//Loading the Location
+function dizi( msgTxt )
+{
+	var msgDiv = document.getElementById('dizi');
+	msgDiv.innerHTML = msgTxt;
+	document.getElementById('dizi').style.fontWeight = "200";
+}
+
+//Loading the Host Name
+function host( msgTxt )
+{
+	var msgDiv = document.getElementById('host');
+	msgDiv.innerHTML = msgTxt;
+	document.getElementById('host').style.fontWeight = "200";
+}
+
+//Loading the Number of people attending the event
+function Attending( msgTxt )
+{
+	var msgDiv = document.getElementById('Attending');
+	msgDiv.innerHTML = msgTxt;
+	msgDiv.style.fontSize = "25px";
+}
+
+//Loading the name displaying "attending"
+function atext( msgTxt )
+{
+	var msgDiv = document.getElementById('atext');
+	msgDiv.innerHTML = msgTxt;
+	document.getElementById('atext').style.fontWeight = "200";
+}
+
+//Loading the Number of people attending the event
+function Maybe( msgTxt )
+{
+	var msgDiv = document.getElementById('Maybe');
+	msgDiv.innerHTML = msgTxt;
+	msgDiv.style.fontSize = "25px";
+}
+
+//Loading the name displaying "attending"
+function mtext( msgTxt )
+{
+	var msgDiv = document.getElementById('mtext');
+	msgDiv.innerHTML = msgTxt;
+	document.getElementById('mtext').style.fontWeight = "200";
+}
+
+//Loading the Number of people attending the event
+function Noped( msgTxt )
+{
+	var msgDiv = document.getElementById('Noped');
+	msgDiv.innerHTML = msgTxt;
+	msgDiv.style.fontSize = "25px";
+}
+
+//Loading the name displaying "attending"
+function ntext( msgTxt )
+{
+	var msgDiv = document.getElementById('ntext');
+	msgDiv.innerHTML = msgTxt;
+	document.getElementById('ntext').style.fontWeight = "200";
+}
+
+function refreshData() {
+	details(go);
+
+	Attending(go.length-2);
+	//Maybe(JSON.parse(saving.maybe).length -1);
+	Maybe(maybe.length -1);
+	// Noped(JSON.parse(saving.no).length -1);
+	Noped(no.length-1);
+}
 
 //Sharing the game function. Saving data. 
 function ShareGame(event)
@@ -221,7 +564,15 @@ function ShareGame(event)
 		start: $('#start').val(),
 		end: $('#end').val(),
 		place: $('#pac-input').val(),
-	}
+		greetings: $('#refreshtime').text(),
+		goodbye: $('#timebreak').text(),
+		host: userID["name"],
+		sharedDocID: myDocId,
+	};
+
+	// saving["go"] = JSON.stringify(go);
+	// saving["maybe"] = JSON.stringify(maybe);
+	// saving["no"] = JSON.stringify(no);
 	
 	if(Omlet.isInstalled() )
 	{
@@ -231,32 +582,46 @@ function ShareGame(event)
 				   displayThumbnailUrl: "https://mobi-summer-evan.s3.amazonaws.com/Picture%20and%20Themes/Omlet%20Event%20Master.png",
 				   displayText: "You have been invited to an event! Attend?", 
 				   json: saving,
-				   webCallback: "https://mobi-summer-evan.s3.amazonaws.com/Event%20Master/emasterlay.html",
+				   webCallback: "https://sean-apps.s3.amazonaws.com/EventMaster/emasterlay.html",
 				   callback: window.location.href,
 			   });
-		 Omlet.exit(rdl);
+		Omlet.exit(rdl);
 	}
 	else
 	{
 	}
 }
 
+var userID=[];
+var viewerUser = [];
+
 Omlet.ready(function() {
 	var omletPackage = Omlet.getPasteboard();
 
-	if( omletPackage )
+	if(omletPackage)
 		{
 			saving = omletPackage.json;
+			myDocId = saving["sharedDocID"];
+
+			viewerUser = Omlet.getIdentity();
+			initDocument();
+			//Redirect page to the right form. 
+			window.location.replace("#viewerdelight");
 			LoadData();
+			codeAddress();
+
 		}
 		else
 		{
+			window.location.replace("#pageone");
+			userID = Omlet.getIdentity();
+			initDocument();
 		}
-} );
+});
 
 $(document).ready(function(){
+
 	google.maps.event.addDomListener(window, 'load', initialize);
 	setUpShare();
-	// window.location.hash = '#landing';
-	// $.mobile.initializePage();
+	details(go);
 });

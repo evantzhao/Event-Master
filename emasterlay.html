@@ -4,12 +4,6 @@
         <title>Event Master</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-		 		
-<!-- 		<script>
-			$(document).on("mobileinit",function() {
-			$.mobile.autoInitializePage = false;
-			}); 
-		</script> -->
 
 		<!-- Omlet  -->
 		<script type = "text/javascript" src = "https://omlet.me/a/js/omlet.js"></script>
@@ -24,23 +18,21 @@
 		
 		<!-- Google Places API -->
 		<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places"></script>
-		
 		<!-- Styles -->
 		<!-- <link rel="stylesheet" href="https://mobi-summer-evan.s3.amazonaws.com/Styles/Blufuego.css" />
-		<link rel="stylesheet" href="https://mobi-summer-evan.s3.amazonaws.com/Styles/Blufuego.min.css" />		 -->
+		<link rel="stylesheet" href="https://mobi-summer-evan.s3.amazonaws.com/Styles/Blufuego.min.css" /> -->
 		
 		<!-- Link to the JavaScript File -->
 		<script type = 'text/javascript' src= 'emasterjs.js'></script>	
 
     </head>
     <body>
-		<!-- <div data-role = "page" id = "landing">
+		<div data-role = "page" id = "landing">
 			<div data-role = "content">
- 				<h1 id="title">Event Master</h1>
-				<button class="ui-btn" id="next">Next</button>
-				<div id="logger"></div>
-			</div> -->
-		<!-- </div> -->
+				
+			</div>
+		</div>
+		
 		<div data-role = "page" id = "pageone">
 			<div data-role = "content">
 					<div id="inputs">
@@ -94,9 +86,153 @@
 		<div data-role = "page" id = "locationpage">
 			<div data-role = "main" class = "ui-content">
 				<textarea id="pac-input" class="controls" type="text" placeholder="Enter a location"></textarea>
-				<a href="#pageone" class="ui-btn" onclick = lokifunc()>Back</a>
+				<a href="#pageone" class="ui-btn" onclick = "lokifunc();">Back</a>
 			</div>
 		</div>
-		
+
+		<div data-role="page" data-dialog="true" id="guestlist">
+  			<div data-role="main" class="ui-content">
+  			  <a href="#viewerdelight">Back</a>
+ 			</div>
+		</div>
+
+		<!-- Redirect to the Viewer's Page. May become a very large file, and start lagging, so it may be a good idea to separate these two documents.  -->
+		<div data-role = "page" id = "viewerdelight">
+			<div id = "image bar"><!-- Header Image -->
+				<div class = "image" ><img width=100% height= 150px alt="Header" src="https://mobi-summer-evan.s3.amazonaws.com/Picture%20and%20Themes/Z.jpg"/></div>
+				<h2 id = "sdf"><span id='nama'></span></h2>
+				<p id = "df"><span id = 'host'></span></p>
+			</div>
+
+			<style>
+				#sdf{
+					position: absolute;
+					top: 80px;
+					left: 0;
+					width: 100%;
+					float: top;
+				}
+
+				#df{
+					position: absolute;
+					top: 110px;
+					left: 0;
+					width: 100%;
+				}
+
+				#sdf span {
+					   color: white;
+					   background: rgb(0, 0, 0); /* fallback color */
+					   background: rgba(0, 0, 0, 0.7);
+					   padding: 10px;
+					   padding-bottom: 21px;
+					   /*font-family: Arial; */
+					   font-size: 22px;
+				}
+
+				#df span {
+					   color: white; 
+					   padding-left: 10px;
+					   
+					   font-size: 12px;
+					   font-weight: 20px;
+
+				}
+
+
+				.image{
+					position: relative;
+					width: 100%;
+				}
+
+
+			</style>
+
+			<div data-role="navbar">
+			    <ul>
+			        <li><a href="#" class="ui-btn ui-icon-check ui-btn-icon-bottom" onclick = "coming();handleClick();">Yes!</a></li>
+			        <li><a href="#" class = "ui-btn ui-icon-eye ui-btn-icon-bottom" onclick = "perhaps();handleClick();">Maybe</a></li>
+			        <li><a href="#" class = "ui-btn ui-icon-forbidden ui-btn-icon-bottom" onclick = "nope();handleClick();">No...</a></li>
+			    </ul>
+			</div><!-- /navbar -->
+
+			<div data-role = "content" class = "ui-content">
+				<body>
+
+					<div id="layout">
+
+							<div id = "description" class="ui-corner-all custom-corners">
+								<div class="ui-bar ui-bar-a">
+									<h3>About</h3>
+								</div>
+								<div class="ui-body ui-body-a">
+									<div id="Testing"></div>
+								</div>
+							</div>
+					</div>
+				</div>
+			</body>
+
+								<div data-role="navbar">
+								    <ul>
+								        <li><a href = "#guestlist" class="ui-btn"><div id = "Attending"></div><div id = "atext"></div></a></li>
+								        <li><a href = "#guestlist" class = "ui-btn"><div id = "Maybe"></div><div id="mtext"></div></a></li>
+								        <li><a href = "#guestlist" class = "ui-btn"><div id = "Noped"></div><div id = "ntext"></div></a></li>
+								    </ul>
+								</div><!-- /navbar -->
+
+						<div data-role = "content" class = "ui-content">
+							<body>
+							<!-- Line Break -->
+							<br>
+
+							<div id = "DT" class = "ui-corner-all custom-corners">
+								<div class="ui-bar ui-bar-a">
+									<h3>Date and Time</h3>
+								</div>
+								<div class="ui-body ui-body-a">
+									<div id="rizi"></div>
+									<br>
+									<div id = "wanle"></div>
+								</div>
+							</div>
+
+							<style>
+								#wanle{
+									padding-bottom: 10px;
+								}
+
+								#rizi{
+									padding-top: 10px;
+								}
+
+							</style>
+
+							<br>
+
+							<div id = "map" class = "ui-corner-all custom-corners">
+								<div class="ui-bar ui-bar-a">
+									<h3>Location</h3>
+								</div>
+								<div class="ui-body ui-body-a">
+									<div id = "dizi"></div>
+									 <br>
+									<div id = "map-canvas"></div>
+
+									<style>
+										      #map-canvas {
+										      	height: 200px;
+										      	margin: 0px;
+										      	padding: 0px
+      											}
+									</style>
+								</div>
+							</div>
+						
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
     </body>
 </html>
