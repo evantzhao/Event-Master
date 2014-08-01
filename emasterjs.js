@@ -1,23 +1,67 @@
+var picturevar = [0];
+
+function setBeach(){
+	picturevar[0] = "Beach";
+	displayed(picturevar[0]);
+}
+
+function setSports(){
+	picturevar[0] = "Sports";
+	displayed(picturevar[0]);
+	// document.getElementById("headerimage").value = frisbee;
+
+}
+
+function setFood() {
+	picturevar[0] = "Food";
+	displayed(picturevar);
+}
+
+function setPic(){
+	if(picturevar[0] == "Beach"){
+		$('#headerimage').prepend('<img width=100% height= 150px alt="Header" src="https://mobi-summer-evan.s3.amazonaws.com/Picture%20and%20Themes/Z.jpg"/>');
+	}
+	else if(picturevar[0] == "Sports"){
+		$('#headerimage').prepend('<img width=100% height= 150px alt="Header" src="https://mobi-summer-evan.s3.amazonaws.com/Picture%20and%20Themes/Frisbee.jpg"/>');
+	}
+	else if(picturevar[0] == "Food"){
+		$('#headerimage').prepend('<img width=100% height= 150px alt="Header" src="https://mobi-summer-evan.s3.amazonaws.com/Picture%20and%20Themes/Food.jpg"/>');
+	}
+}
+
 //Global Variables for Keeping track of the guest list.
-var go = [0,0];
-var maybe = ["oia9th3erg"];
+var go = [0,1];
+var maybe = [0];
 var no = ["aoh0wjg0ewj"]; 
 
 //Shared Document API
-
 function Initializing(old, params) {
 	return params;
 }
 
-function Update(old, params) {
+function Updatego(old, params) {
 	old.go = params["go"];
 	return old;
 	console.log("Updating!");
 }
 
+function Updatemaybe(old, params) {
+	old.maybe =params["maybe"];
+	return old;
+	console.log("updating!");
+}
+
+function Updateno(old, params){
+	old.no = params["no"];
+	return old;
+	console.log("updating");
+}
+
 function InitialDocument() {
 	var initValues = {
 		"go": "",
+		"maybe" : "",
+		"no" : "",
 	};
 	return initValues;
 }
@@ -35,13 +79,25 @@ function ReceiveUpdate(doc) {
 
 	console.log("go: " + myDoc["go"]);
 	go = JSON.parse(myDoc["go"]);
+	maybe = JSON.parse(myDoc["maybe"]);
+	no = JSON.parse(myDoc["no"]);
+
+	$('#list_devices').children("ol").remove();
+	$('#maybego').children("ol").remove();
+	$('#nogo').children("ol").remove();
+
+	addEntry();
+	addMaybe();
+	addNo();
+
+
 
 	refreshData();
-	alert("I received an update!");
+	console.log("I received an update!");
 }
 
 function DidNotReceiveUpdate(doc) {
-console.log("I did not receive an update");
+	console.log("I did not receive an update");
 }
 
 //////////////////////////////
@@ -122,26 +178,29 @@ function initialize() {
  var input = document.getElementById('pac-input');
  var autocomplete = new google.maps.places.Autocomplete(input, options);
 
+geocoder = new google.maps.Geocoder();
+
   var mapOptions = {
     zoom: 13,
     center: new google.maps.LatLng(37.785285, -122.429177),
     disableDefaultUI: true,
+    mapTypeId: google.maps.MapTypeId.ROADMAP,
   };
  
 map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
-geocoder = new google.maps.Geocoder();
 
 }
 
 function codeAddress()
 {
-	var sAddress = saving.place;
-	geocoder.geocode( { 'address': sAddress}, function(results, status) { 
+	var address = saving.place;
+	geocoder.geocode( { 'address': address}, function(results, status) { 
 		if( status == google.maps.GeocoderStatus.OK){
 			map.setCenter(results[0].geometry.location);
 			var marker = new google.maps.Marker({ 
-			map: map, 
-			position: results[0].geometry.location });
+				map: map, 
+				position: results[0].geometry.location
+			});
 		}
 		else{
 
@@ -152,36 +211,40 @@ function codeAddress()
 //Load Data from shared RDL
 function LoadData()
 {
-	// go = JSON.parse(saving.go);
-	// maybe = JSON.parse(saving.maybe);
-	// no = JSON.parse(saving.no);
-
-	//details(saving.details);
+	setPic();
+	details(saving.details);
 	nama(saving.name);
 	host("Hosted by: " + saving.host);
 	rizi(saving.greetings);
 	wanle(saving.goodbye);
 	dizi(saving.place);
-	//Attending(JSON.parse(saving.go).length -1);
 	Attending(go.length-2);
 	atext("Attending");
-	//Maybe(JSON.parse(saving.maybe).length -1);
 	Maybe(maybe.length -1);
 	mtext("Maybe");
-	// Noped(JSON.parse(saving.no).length -1);
 	Noped(no.length-1);
 	ntext("Declined");
 }
 
 function handleClick() {
+
 	var goText = JSON.stringify(go);
-	documentApi.update( myDocId, Update, { 'go' : goText } , ReceiveUpdate, DidNotReceiveUpdate);
+	var maybeText = JSON.stringify(maybe);
+	var noText = JSON.stringify(no);
+
+
+	documentApi.update( myDocId, Updatego, { 'go' : goText } , ReceiveUpdate, DidNotReceiveUpdate);
+	documentApi.update( myDocId, Updatemaybe, { 'maybe' : maybeText } , ReceiveUpdate, DidNotReceiveUpdate);
+	documentApi.update( myDocId, Updateno, { 'no' : noText } , ReceiveUpdate, DidNotReceiveUpdate);
+
+
 }
+
 
 //Sharing RDL Function
 function setUpShare() 
 {
-	$("#share").click(function(){
+	$("#share").click(function() {
 		ShareGame();
 	});
 
@@ -346,26 +409,30 @@ function datefunc() {
 			eday = pday;
 		}
 
-		refreshtime("Start: " + nday + ", " + smonth + "/" + sdate + " @ " + nhour + ":" + pmin + " " + pm);
-		timebreak("End: " + pday + ", " + emonth + "/" + edate + " @ " + phour + ":" + nmin + ' ' + am );
+		refreshtime("Start: " + nday + ", " + smonth + "/" + sdate + " at " + nhour + ":" + pmin + " " + pm);
+		timebreak("End: " + pday + ", " + emonth + "/" + edate + " at " + phour + ":" + nmin + ' ' + am );
 	}
+}
+
+function focusing(){
+	var input = document.getElementById("end").focus();
 }
 
 function coming()
 {
 	for(var e = maybe.length - 1; e >= 0; e--) {
-	 	if(viewerUser["name"] === maybe[e])
+	 	if(viewerUser["name"] == maybe[e])
 	 	{
-    		if(maybe[e] === viewerUser["name"]) {
+    		if(maybe[e] == viewerUser["name"]) {
         	maybe.splice(e, 1);
      		}	
 	 	}
 	 }
 
 	for(var p = no.length - 1; p >= 0; p--) {
-	 	if(viewerUser["name"] === no[p])
+	 	if(viewerUser["name"] == no[p])
  		{
-    		if(no[p] === viewerUser["name"]){
+    		if(no[p] == viewerUser["name"]){
         	no.splice(p, 1);
      		}		
 	 	}
@@ -380,18 +447,18 @@ function coming()
 function perhaps()
 {
 	for(var e = go.length - 1; e >= 0; e--) {
-		if(viewerUser["name"] === go[e])
+		if(viewerUser["name"] == go[e])
 		{
-   				if(go[e] === viewerUser["name"]) {
+   				if(go[e] == viewerUser["name"]) {
        			go.splice(e, 1);
     			}
 		}
 	}
 
 	for(var p = no.length - 1; p >= 0; p--) {
-		if(viewerUser["name"] === no[p])
+		if(viewerUser["name"] == no[p])
 		{
-   				if(no[p] === viewerUser["name"]) {
+   				if(no[p] == viewerUser["name"]) {
        			no.splice(p, 1);
     			}
 		}
@@ -407,18 +474,18 @@ function perhaps()
 function nope()
 {
 	for(var e = maybe.length - 1; e >= 0; e--) {
-		if(viewerUser["name"] === maybe[e])
+		if(viewerUser["name"] == maybe[e])
 		{
-   			if(maybe[e] === viewerUser["name"]) {
+   			if(maybe[e] == viewerUser["name"]) {
        		maybe.splice(e, 1);
     		}
 		}
 	}
 
 	for(var p = go.length - 1; p >= 0; p--) {
-		if(viewerUser["name"] === go[p])
+		if(viewerUser["name"] == go[p])
 		{
-   			if(go[p] === viewerUser["name"]) {
+   			if(go[p] == viewerUser["name"]) {
        		go.splice(p, 1);
     		}
 		}
@@ -428,9 +495,57 @@ function nope()
 	if(no.indexOf(viewerUser["name"]) == -1){
 		no[no.length]= viewerUser["name"];
 	}
-	
+
 }
 
+function addEntry()
+{
+    var items = document.getElementById("list_devices");
+
+    for (var i = 2; i < go.length; i++ ) {
+        var item = document.createElement("ol");
+        item.innerHTML = go[i];
+        items.appendChild(item);
+    }
+}
+
+function addMaybe()
+{
+    var items = document.getElementById("maybego");
+
+    for (var i = 1; i < maybe.length; i++ ) {
+        var item = document.createElement("ol");
+        item.innerHTML = maybe[i];
+        items.appendChild(item);
+    }
+}
+
+function addNo()
+{
+    var items = document.getElementById("nogo");
+
+    for (var i = 1; i < no.length; i++ ) {
+        var item = document.createElement("ol");
+        item.innerHTML = no[i];
+        items.appendChild(item);
+    }
+}
+
+//Displayed Picture
+function displayed( msgTxt )
+{
+	var msgDiv = document.getElementById('displayed');
+	msgDiv.innerHTML = msgTxt;
+	document.getElementById('displayed').style.fontWeight = "200";
+}
+
+//Guest List: attending
+function gopanel( msgTxt )
+{
+	var msgDiv = document.getElementById('list_devices');
+	msgDiv.innerHTML = msgTxt;
+	document.getElementById('list_devices').style.fontWeight = "200";
+}
 //Location logging. 
 function lokitime( msgTxt )
 {
@@ -546,13 +661,17 @@ function ntext( msgTxt )
 }
 
 function refreshData() {
-	details(go);
-
 	Attending(go.length-2);
-	//Maybe(JSON.parse(saving.maybe).length -1);
 	Maybe(maybe.length -1);
-	// Noped(JSON.parse(saving.no).length -1);
 	Noped(no.length-1);
+}
+
+function reset(){
+     var t = $("#nav");
+     var offset = t.offset();
+         $(function() {
+              $(".holder").css("height" , offset.top);     
+           });
 }
 
 //Sharing the game function. Saving data. 
@@ -568,21 +687,18 @@ function ShareGame(event)
 		goodbye: $('#timebreak').text(),
 		host: userID["name"],
 		sharedDocID: myDocId,
+		picturevar : picturevar[0],
 	};
 
-	// saving["go"] = JSON.stringify(go);
-	// saving["maybe"] = JSON.stringify(maybe);
-	// saving["no"] = JSON.stringify(no);
-	
 	if(Omlet.isInstalled() )
 	{
 		var rdl = Omlet.createRDL({
 				   noun: "event",
 				   displayTitle: saving.name + " | EventMaster",
-				   displayThumbnailUrl: "https://mobi-summer-evan.s3.amazonaws.com/Picture%20and%20Themes/Omlet%20Event%20Master.png",
+				   displayThumbnailUrl: "https://mobi-summer-evan.s3.amazonaws.com/Picture%20and%20Themes/Balloon.jpg",
 				   displayText: "You have been invited to an event! Attend?", 
 				   json: saving,
-				   webCallback: "https://sean-apps.s3.amazonaws.com/EventMaster/emasterlay.html",
+				   webCallback: "https://mobi-summer-evan.s3.amazonaws.com/Event%20Master/emasterlay.html",
 				   callback: window.location.href,
 			   });
 		Omlet.exit(rdl);
@@ -593,23 +709,23 @@ function ShareGame(event)
 }
 
 var userID=[];
-var viewerUser = [];
+var viewerUser =[];
 
 Omlet.ready(function() {
+
 	var omletPackage = Omlet.getPasteboard();
 
 	if(omletPackage)
-		{
-			saving = omletPackage.json;
-			myDocId = saving["sharedDocID"];
-
-			viewerUser = Omlet.getIdentity();
-			initDocument();
-			//Redirect page to the right form. 
+		{	
 			window.location.replace("#viewerdelight");
+			saving = omletPackage.json;
 			LoadData();
-			codeAddress();
-
+			myDocId = saving["sharedDocID"];
+			picturevar[0] = saving["picturevar"];
+			initDocument();
+			viewerUser = Omlet.getIdentity();
+			setPic();
+			codeAddress(); 
 		}
 		else
 		{
@@ -619,9 +735,18 @@ Omlet.ready(function() {
 		}
 });
 
-$(document).ready(function(){
 
+
+$(document).ready(function(){
 	google.maps.event.addDomListener(window, 'load', initialize);
+	google.maps.event.addDomListener(window, "resize", function() {
+		var center = map.getCenter();
+ 		google.maps.event.trigger(map, "resize");
+ 		map.setCenter(center);
+	});
 	setUpShare();
-	details(go);
+
+$( "#time" ).click(function() {
+  $( "#start" ).focus();
+});
 });

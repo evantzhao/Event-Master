@@ -7,7 +7,7 @@
 
 		<!-- Omlet  -->
 		<script type = "text/javascript" src = "https://omlet.me/a/js/omlet.js"></script>
-		
+
 		<!-- Official Jquery Mobile  -->
 		<link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jquerymobile/1.4.3/jquery.mobile.min.css" />
 		<script src="//ajax.googleapis.com/ajax/libs/jquerymobile/1.4.3/jquery.mobile.min.js"></script>
@@ -15,13 +15,13 @@
 		<script src="http://code.jquery.com/mobile/1.4.2/jquery.mobile-1.4.2.min.js"></script>	
 		<!-- jQuery -->
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-		
+
 		<!-- Google Places API -->
 		<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places"></script>
 		<!-- Styles -->
 		<!-- <link rel="stylesheet" href="https://mobi-summer-evan.s3.amazonaws.com/Styles/Blufuego.css" />
 		<link rel="stylesheet" href="https://mobi-summer-evan.s3.amazonaws.com/Styles/Blufuego.min.css" /> -->
-		
+
 		<!-- Link to the JavaScript File -->
 		<script type = 'text/javascript' src= 'emasterjs.js'></script>	
 
@@ -29,10 +29,10 @@
     <body>
 		<div data-role = "page" id = "landing">
 			<div data-role = "content">
-				
+
 			</div>
 		</div>
-		
+
 		<div data-role = "page" id = "pageone">
 			<div data-role = "content">
 					<div id="inputs">
@@ -45,11 +45,11 @@
 									<textarea name="Details" id="comments" data-mini = "true" placeholder = "Details" data-clear-btn = "true"></textarea>
 								</li>
 							</ul>
-						
-							
+
+
 							<ul data-role = "listview" data-inset = "true">
 								<li>
-									<a href ="#time">
+									<a href ="#time" id = "time">
 									<h2>Date and Time</h2>
 									<div id="refreshtime"></div>
 									<div id="timebreak"></div>
@@ -62,6 +62,15 @@
 									</a>
 								</li>
 							</ul>
+
+							<ul data-role = "listview" data-inset = "true">
+								<li>
+									<a href ="#pic">
+									<h2>Select a display image</h2>
+									<div id="displayed"></div>
+									</a>
+								</li>
+							</ul>
 						</form>
 					</div>
 					<div>
@@ -71,18 +80,29 @@
 					</div>
 				</div>
 			</div>
-		
+
 		<div data-role = "page" id = "time">
 			<div data-role = "main" class = "ui-content">
 				<ul data-role = "listview" data-inset = "true">
-					<li><b>Start</b><input type="datetime-local" id = "start"></li>
+					<li><b>Start</b><input type="datetime-local" id = "start" placeholder = "2014-07-30T23:50:06.329Z"></li>
 
 					<li> <b>End</b> <input type ="datetime-local" id = "end"></li>
 				</ul>
 				<a href="#pageone" class="ui-btn" id ="returntime" onclick=datefunc()>Back</a>
 			</div>
 		</div>
-		
+
+		<div data-role = "page" id = "pic">
+			<div data-role = "main" class = "ui-content">
+				<ul data-role="listview">
+				  <li><a href="#pageone" onclick = setBeach()><img src="https://mobi-summer-evan.s3.amazonaws.com/Picture%20and%20Themes/Z.jpg">Beach</a></li>
+				  <li><a href="#pageone" onclick = setSports()><img src="https://mobi-summer-evan.s3.amazonaws.com/Picture%20and%20Themes/Frisbee.jpg">Sports</a></li>
+				  <li><a href="#pageone" onclick = setFood()><img src="https://mobi-summer-evan.s3.amazonaws.com/Picture%20and%20Themes/Food.jpg">Food</a></li>
+				</ul>
+				<a href="#pageone" class="ui-btn" id ="returntime">Back</a>
+			</div>
+		</div>
+
 		<div data-role = "page" id = "locationpage">
 			<div data-role = "main" class = "ui-content">
 				<textarea id="pac-input" class="controls" type="text" placeholder="Enter a location"></textarea>
@@ -90,16 +110,32 @@
 			</div>
 		</div>
 
-		<div data-role="page" data-dialog="true" id="guestlist">
-  			<div data-role="main" class="ui-content">
-  			  <a href="#viewerdelight">Back</a>
- 			</div>
-		</div>
-
 		<!-- Redirect to the Viewer's Page. May become a very large file, and start lagging, so it may be a good idea to separate these two documents.  -->
 		<div data-role = "page" id = "viewerdelight">
+			<!-- Guest List Panel Attending-->
+			<div data-role="panel" id="guestlistattend" data-display = "overlay" data-position = "left" data-swipe-close = "true">
+	  			<h2>Attending</h2>
+	  			<ul data-role = "listview" id = "list_devices" data-divider-theme = "a">
+
+            	</ul>
+			</div>
+			<!-- Guest List Panel Maybe-->
+			<div data-role="panel" id="guestlistmaybe" class = "nav-search" data-display = "overlay" data-position = "left" data-swipe-close = "true">
+	  			<h2>Maybe</h2>
+	  			<ul data-role = "listview" id = "maybego" data-theme = "a">
+
+            	</ul>			
+            </div>
+			<!-- Guest List Panel Decline-->
+			<div data-role="panel" id="guestlistdecline" data-display = "overlay" data-position = "left" data-swipe-close = "true">
+	  			<h2>Declined</h2>
+	  				<ul data-role = "listview" id = "nogo" data-divider-theme = "a">
+
+            		</ul>
+			</div>
+
 			<div id = "image bar"><!-- Header Image -->
-				<div class = "image" ><img width=100% height= 150px alt="Header" src="https://mobi-summer-evan.s3.amazonaws.com/Picture%20and%20Themes/Z.jpg"/></div>
+				<div class = "image" id = "headerimage"></div>
 				<h2 id = "sdf"><span id='nama'></span></h2>
 				<p id = "df"><span id = 'host'></span></p>
 			</div>
@@ -133,16 +169,18 @@
 				#df span {
 					   color: white; 
 					   padding-left: 10px;
-					   
+					   background: rgb(0, 0, 0); /* fallback color */
+					   background: rgba(0, 0, 0, 0.7);
 					   font-size: 12px;
-					   font-weight: 20px;
+					   padding-right: 5px;
 
 				}
 
 
 				.image{
 					position: relative;
-					width: 100%;
+					max-width: 100%;
+					height: auto;
 				}
 
 
@@ -175,9 +213,9 @@
 
 								<div data-role="navbar">
 								    <ul>
-								        <li><a href = "#guestlist" class="ui-btn"><div id = "Attending"></div><div id = "atext"></div></a></li>
-								        <li><a href = "#guestlist" class = "ui-btn"><div id = "Maybe"></div><div id="mtext"></div></a></li>
-								        <li><a href = "#guestlist" class = "ui-btn"><div id = "Noped"></div><div id = "ntext"></div></a></li>
+								        <li><a href = "#guestlistattend" class="ui-btn" id = "theabutton"><div id = "Attending"></div><div id = "atext"></div></a></li>
+								        <li><a href = "#guestlistmaybe" class = "ui-btn"><div id = "Maybe"></div><div id="mtext"></div></a></li>
+								        <li><a href = "#guestlistdecline" class = "ui-btn"><div id = "Noped"></div><div id = "ntext"></div></a></li>
 								    </ul>
 								</div><!-- /navbar -->
 
@@ -220,19 +258,18 @@
 									<div id = "map-canvas"></div>
 
 									<style>
-										      #map-canvas {
-										      	height: 200px;
-										      	margin: 0px;
-										      	padding: 0px
-      											}
+										#map-canvas {
+											height:250px;
+										    margin: 0px;
+										    padding: 0px;
+      									}
 									</style>
 								</div>
 							</div>
-						
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-	</div>
     </body>
 </html>
