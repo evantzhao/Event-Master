@@ -10,29 +10,21 @@
 
 		<!-- Official Jquery Mobile  -->
 		<link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jquerymobile/1.4.3/jquery.mobile.min.css" />
-		<script src="//ajax.googleapis.com/ajax/libs/jquerymobile/1.4.3/jquery.mobile.min.js"></script>
-		<script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
-		<script src="http://code.jquery.com/mobile/1.4.2/jquery.mobile-1.4.2.min.js"></script>	
+		<script src="https://mobi-summer-evan.s3.amazonaws.com/Event%20Master/jquery-1.10.2.min.js"></script>
+		<script src="https://mobi-summer-evan.s3.amazonaws.com/Event%20Master/jquery-mobile-1.4.2.js"></script>	
+
 		<!-- jQuery -->
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 
 		<!-- Google Places API -->
 		<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places"></script>
-		<!-- Styles -->
-		<!-- <link rel="stylesheet" href="https://mobi-summer-evan.s3.amazonaws.com/Styles/Blufuego.css" />
-		<link rel="stylesheet" href="https://mobi-summer-evan.s3.amazonaws.com/Styles/Blufuego.min.css" /> -->
 
 		<!-- Link to the JavaScript File -->
-		<script type = 'text/javascript' src= 'emasterjs.js'></script>	
+		<script type = 'text/javascript' src= 'emasterjs.js'></script>
+
 
     </head>
     <body>
-		<div data-role = "page" id = "landing">
-			<div data-role = "content">
-
-			</div>
-		</div>
-
 		<div data-role = "page" id = "pageone">
 			<div data-role = "content">
 					<div id="inputs">
@@ -266,7 +258,26 @@
 									</style>
 								</div>
 							</div>
-						</div>
+							<br>
+
+
+            				<div id = "headerpost">
+                				<h3 id = "headerasdf">Recent Posts</h3>
+                				<div class="posts">
+                				</div>
+            				</div>
+
+							<div class="container">
+								<h3>Wall Posts</h3>
+                    				<div class="form-group">
+                        				<textarea class="status-box" id="statusBox" placeholder="What's on your mind?"></textarea>
+                    				</div>
+
+                				<div class = "buttonForPost">
+                					<button class="ui-btn" id = "posting">Post</button>
+                				</div>
+            				</div>
+						</div>  						
 					</div>
 				</div>
 			</div>

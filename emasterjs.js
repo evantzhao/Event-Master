@@ -1,3 +1,53 @@
+var wallPosts = [0];
+var wallPostsID = [0];
+
+//Status Update Box
+function status() {
+  $('#posting').click(function() {
+    $('.posts').prepend("<h3 class='ui-bar ui-bar-a ui-corner-all' id = 'identity'></h3><div class='ui-body ui-body-a ui-corner-all' id='content'></div>");
+
+    var post = $('#statusBox').val();
+    $('#content').append("<p>" + post + "</p>");
+    $('#identity').append(viewerUser['name']);
+    $('.status-box').val('');
+    $('#posting').addClass('ui-state-disabled'); 
+
+    // Save the variables to the array. 
+	wallPosts[wallPosts.length] = post;
+	wallPostsID[wallPostsID.length] = viewerUser['name'];
+
+    // Update Arrays Accordingly through the Shared Document. 
+    var wallUpdateText = JSON.stringify(wallPosts);
+	var wallPostsIDText = JSON.stringify(wallPostsID);
+    documentApi.update( myDocId, wallUpdate, { 'wallPosts' : wallUpdateText } , ReceiveUpdate, DidNotReceiveUpdate);
+	documentApi.update( myDocId, wallID, { 'wallPostsID' : wallPostsIDText } , ReceiveUpdate, DidNotReceiveUpdate);
+  });
+  
+   $('.status-box').keyup(function() {
+    var charactersLeft = ($('.status-box').val()).length;
+    if(charactersLeft < 0) {
+      $('#posting').addClass('ui-state-disabled'); 
+    }
+    else {
+      $('#posting').removeClass('ui-state-disabled');
+    }
+   });
+
+  $('#posting').addClass('ui-state-disabled');
+}
+
+function loadwall(){
+	$('.posts').empty();
+
+	for(var i = 1; i < wallPosts.length; i++ ) {
+		$('.posts').prepend("<h3 class='ui-bar ui-bar-a ui-corner-all' id = 'identity'></h3><div class='ui-body ui-body-a ui-corner-all' id='content'></div><br>");
+
+		$('#content').append('<p>' + wallPosts[i] + '</p>');
+    	$('#identity').append(wallPostsID[i]);
+	}
+}
+
+//Picture Selector
 var picturevar = [0];
 
 function setBeach(){
@@ -39,6 +89,18 @@ function Initializing(old, params) {
 	return params;
 }
 
+function wallUpdate(old, params) {
+	old.wallPosts = params["wallPosts"];
+	return old;
+	console.log("updating");
+}
+
+function wallID(old, params){
+	old.wallPostsID = params["wallPostsID"];
+	return old;
+	console.log("updating");
+}
+
 function Updatego(old, params) {
 	old.go = params["go"];
 	return old;
@@ -62,6 +124,8 @@ function InitialDocument() {
 		"go": "",
 		"maybe" : "",
 		"no" : "",
+		"wallPosts" : "",
+		"wallPostsID" : "",
 	};
 	return initValues;
 }
@@ -81,6 +145,9 @@ function ReceiveUpdate(doc) {
 	go = JSON.parse(myDoc["go"]);
 	maybe = JSON.parse(myDoc["maybe"]);
 	no = JSON.parse(myDoc["no"]);
+	wallPosts = JSON.parse(myDoc["wallPosts"]);
+	wallPostsID = JSON.parse(myDoc["wallPostsID"]);
+	loadwall();
 
 	$('#list_devices').children("ol").remove();
 	$('#maybego').children("ol").remove();
@@ -89,8 +156,6 @@ function ReceiveUpdate(doc) {
 	addEntry();
 	addMaybe();
 	addNo();
-
-
 
 	refreshData();
 	console.log("I received an update!");
@@ -227,17 +292,19 @@ function LoadData()
 }
 
 function handleClick() {
-
 	var goText = JSON.stringify(go);
 	var maybeText = JSON.stringify(maybe);
 	var noText = JSON.stringify(no);
-
 
 	documentApi.update( myDocId, Updatego, { 'go' : goText } , ReceiveUpdate, DidNotReceiveUpdate);
 	documentApi.update( myDocId, Updatemaybe, { 'maybe' : maybeText } , ReceiveUpdate, DidNotReceiveUpdate);
 	documentApi.update( myDocId, Updateno, { 'no' : noText } , ReceiveUpdate, DidNotReceiveUpdate);
 
-
+	// Update Arrays Accordingly through the Shared Document. 
+    var wallUpdateText = JSON.stringify(wallPosts);
+	var wallPostsIDText = JSON.stringify(wallPostsID);
+    documentApi.update( myDocId, wallUpdate, { 'wallPosts' : wallUpdateText } , ReceiveUpdate, DidNotReceiveUpdate);
+	documentApi.update( myDocId, wallID, { 'wallPostsID' : wallPostsIDText } , ReceiveUpdate, DidNotReceiveUpdate);
 }
 
 
@@ -725,7 +792,8 @@ Omlet.ready(function() {
 			initDocument();
 			viewerUser = Omlet.getIdentity();
 			setPic();
-			codeAddress(); 
+			codeAddress();
+			status(); 
 		}
 		else
 		{
@@ -735,8 +803,6 @@ Omlet.ready(function() {
 		}
 });
 
-
-
 $(document).ready(function(){
 	google.maps.event.addDomListener(window, 'load', initialize);
 	google.maps.event.addDomListener(window, "resize", function() {
@@ -745,8 +811,4 @@ $(document).ready(function(){
  		map.setCenter(center);
 	});
 	setUpShare();
-
-$( "#time" ).click(function() {
-  $( "#start" ).focus();
-});
 });
