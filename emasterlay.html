@@ -19,68 +19,70 @@
 		<!-- Google Places API -->
 		<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places"></script>
 
+		<script src="https://mobi-summer-evan.s3.amazonaws.com/Event%20Master%20Demo/gmaps-master/gmaps.js"></script>
+
 		<!-- Link to the JavaScript File -->
 		<script type = 'text/javascript' src= 'emasterjs.js'></script>
-
-
     </head>
+
     <body>
 		<div data-role = "page" id = "pageone">
 			<div data-role = "content">
-					<div id="inputs">
-						<form name="input" action="" method="post">
-							<ul data-role = "listview" data-inset = "true">
-								<li>
-									<input type="text" name="eventname" id = "name" data-mini = "true" placeholder="Event name" data-clear-btn = "true">
-								</li>
-								<li>
-									<textarea name="Details" id="comments" data-mini = "true" placeholder = "Details" data-clear-btn = "true"></textarea>
-								</li>
-							</ul>
+				<div id="inputs">
+					<form name="input" action="" method="post">
+						<ul data-role = "listview" data-inset = "true">
+							<li>
+								<input type="text" name="eventname" id = "name" data-mini = "true" placeholder="Event name" data-clear-btn = "true">
+							</li>
+							<li>
+								<textarea type = "text" name="Details" id="comments" data-mini = "true" placeholder = "Details" data-clear-btn = "true"></textarea>
+							</li>
+						</ul>
 
-
-							<ul data-role = "listview" data-inset = "true">
-								<li>
-									<a href ="#time" id = "time">
+						<ul data-role = "listview" data-inset = "true">
+							<li>
+								<a href ="#time" id = "time">
 									<h2>Date and Time</h2>
 									<div id="refreshtime"></div>
 									<div id="timebreak"></div>
-									</a>
-								</li>
-								<li>
-									<a href = "#locationpage">
+								</a>
+							</li>
+							<li>
+								<a href = "#locationpage">
 									<h2>Location</h2>
 									<div id= "lokiplace"></div>
-									</a>
-								</li>
-							</ul>
+								</a>
+							</li>
+						</ul>
 
-							<ul data-role = "listview" data-inset = "true">
-								<li>
-									<a href ="#pic">
+						<ul data-role = "listview" data-inset = "true">
+							<li>
+								<a href ="#pic">
 									<h2>Select a display image</h2>
 									<div id="displayed"></div>
-									</a>
-								</li>
-							</ul>
-						</form>
-					</div>
-					<div>
-						<form id="options">
-							<input type="submit" value="Submit" id = "share">
-						</form>
+								</a>
+							</li>
+						</ul>
+					</form>
+				</div>
+
+				<div>
+					<div id="options">
+						<input type="submit" value="Submit" id = "share">
 					</div>
 				</div>
 			</div>
+		</div>
 
 		<div data-role = "page" id = "time">
 			<div data-role = "main" class = "ui-content">
 				<ul data-role = "listview" data-inset = "true">
-					<li><b>Start</b><input type="datetime-local" id = "start" placeholder = "2014-07-30T23:50:06.329Z"></li>
-
+					<li><b>Start</b><input type="datetime-local" id = "start"></li>
 					<li> <b>End</b> <input type ="datetime-local" id = "end"></li>
 				</ul>
-				<a href="#pageone" class="ui-btn" id ="returntime" onclick=datefunc()>Back</a>
+
+				<!-- Back button -->
+				<a href="#pageone" class="ui-btn" id ="returntime" onclick="datefunc();">Back</a>
 			</div>
 		</div>
 
@@ -91,6 +93,8 @@
 				  <li><a href="#pageone" onclick = setSports()><img src="https://mobi-summer-evan.s3.amazonaws.com/Picture%20and%20Themes/Frisbee.jpg">Sports</a></li>
 				  <li><a href="#pageone" onclick = setFood()><img src="https://mobi-summer-evan.s3.amazonaws.com/Picture%20and%20Themes/Food.jpg">Food</a></li>
 				</ul>
+
+				<!-- Back Button -->
 				<a href="#pageone" class="ui-btn" id ="returntime">Back</a>
 			</div>
 		</div>
@@ -98,6 +102,8 @@
 		<div data-role = "page" id = "locationpage">
 			<div data-role = "main" class = "ui-content">
 				<textarea id="pac-input" class="controls" type="text" placeholder="Enter a location"></textarea>
+
+				<!-- Back Button -->
 				<a href="#pageone" class="ui-btn" onclick = "lokifunc();">Back</a>
 			</div>
 		</div>
@@ -108,22 +114,19 @@
 			<div data-role="panel" id="guestlistattend" data-display = "overlay" data-position = "left" data-swipe-close = "true">
 	  			<h2>Attending</h2>
 	  			<ul data-role = "listview" id = "list_devices" data-divider-theme = "a">
-
-            	</ul>
+	  			</ul>
 			</div>
 			<!-- Guest List Panel Maybe-->
-			<div data-role="panel" id="guestlistmaybe" class = "nav-search" data-display = "overlay" data-position = "left" data-swipe-close = "true">
+			<div data-role="panel" id="guestlistmaybe" data-display = "overlay" data-position = "left" data-swipe-close = "true">
 	  			<h2>Maybe</h2>
 	  			<ul data-role = "listview" id = "maybego" data-theme = "a">
-
             	</ul>			
             </div>
 			<!-- Guest List Panel Decline-->
 			<div data-role="panel" id="guestlistdecline" data-display = "overlay" data-position = "left" data-swipe-close = "true">
 	  			<h2>Declined</h2>
-	  				<ul data-role = "listview" id = "nogo" data-divider-theme = "a">
-
-            		</ul>
+	  			<ul data-role = "listview" id = "nogo" data-divider-theme = "a">
+            	</ul>
 			</div>
 
 			<div id = "image bar"><!-- Header Image -->
@@ -174,113 +177,110 @@
 					max-width: 100%;
 					height: auto;
 				}
-
-
 			</style>
 
 			<div data-role="navbar">
 			    <ul>
-			        <li><a href="#" class="ui-btn ui-icon-check ui-btn-icon-bottom" onclick = "coming();handleClick();">Yes!</a></li>
+			        <li><a href="#" data-rel="popup" data-position-to="window" data-transition="pop" class="ui-btn ui-icon-check ui-btn-icon-bottom" onclick = "coming();handleClick();">Yes!</a></li>
 			        <li><a href="#" class = "ui-btn ui-icon-eye ui-btn-icon-bottom" onclick = "perhaps();handleClick();">Maybe</a></li>
 			        <li><a href="#" class = "ui-btn ui-icon-forbidden ui-btn-icon-bottom" onclick = "nope();handleClick();">No...</a></li>
 			    </ul>
 			</div><!-- /navbar -->
 
-			<div data-role = "content" class = "ui-content">
-				<body>
-
-					<div id="layout">
-
-							<div id = "description" class="ui-corner-all custom-corners">
-								<div class="ui-bar ui-bar-a">
-									<h3>About</h3>
-								</div>
-								<div class="ui-body ui-body-a">
-									<div id="Testing"></div>
-								</div>
-							</div>
-					</div>
+			<div data-role="popup" id="acceptshare" data-dismissible="false" style="max-width:400px;">
+				<div data-role="header" data-theme="a">
+					<h1>Share?</h1>
 				</div>
-			</body>
+				<div role="main" class="ui-content">
+					<h3 class="ui-title">Would you like to share your status?</h3>
+					<p>This cannot be undone.</p>
+					<a href="#" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b" data-rel="back">Yes</a>
+					<a href="#" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b" data-rel="back" data-transition="flow">No</a>
+				</div>
+			</div>
 
-								<div data-role="navbar">
-								    <ul>
-								        <li><a href = "#guestlistattend" class="ui-btn" id = "theabutton"><div id = "Attending"></div><div id = "atext"></div></a></li>
-								        <li><a href = "#guestlistmaybe" class = "ui-btn"><div id = "Maybe"></div><div id="mtext"></div></a></li>
-								        <li><a href = "#guestlistdecline" class = "ui-btn"><div id = "Noped"></div><div id = "ntext"></div></a></li>
-								    </ul>
-								</div><!-- /navbar -->
-
-						<div data-role = "content" class = "ui-content">
-							<body>
-							<!-- Line Break -->
-							<br>
-
-							<div id = "DT" class = "ui-corner-all custom-corners">
-								<div class="ui-bar ui-bar-a">
-									<h3>Date and Time</h3>
-								</div>
-								<div class="ui-body ui-body-a">
-									<div id="rizi"></div>
-									<br>
-									<div id = "wanle"></div>
-								</div>
-							</div>
-
-							<style>
-								#wanle{
-									padding-bottom: 10px;
-								}
-
-								#rizi{
-									padding-top: 10px;
-								}
-
-							</style>
-
-							<br>
-
-							<div id = "map" class = "ui-corner-all custom-corners">
-								<div class="ui-bar ui-bar-a">
-									<h3>Location</h3>
-								</div>
-								<div class="ui-body ui-body-a">
-									<div id = "dizi"></div>
-									 <br>
-									<div id = "map-canvas"></div>
-
-									<style>
-										#map-canvas {
-											height:250px;
-										    margin: 0px;
-										    padding: 0px;
-      									}
-									</style>
-								</div>
-							</div>
-							<br>
-
-
-            				<div id = "headerpost">
-                				<h3 id = "headerasdf">Recent Posts</h3>
-                				<div class="posts">
-                				</div>
-            				</div>
-
-							<div class="container">
-								<h3>Wall Posts</h3>
-                    				<div class="form-group">
-                        				<textarea class="status-box" id="statusBox" placeholder="What's on your mind?"></textarea>
-                    				</div>
-
-                				<div class = "buttonForPost">
-                					<button class="ui-btn" id = "posting">Post</button>
-                				</div>
-            				</div>
-						</div>  						
+			<div data-role = "content" class = "ui-content">
+				<div id="layout">
+					<div id = "description" class="ui-corner-all custom-corners">
+						<div class="ui-bar ui-bar-a">
+							<h3>About</h3>
+						</div>
+						<div class="ui-body ui-body-a">
+							<div id="Testing"></div>
+						</div>
 					</div>
 				</div>
 			</div>
+
+			<div data-role="navbar">
+			    <ul>
+			        <li><a href = "#guestlistattend" class="ui-btn" id = "theabutton"><div id = "Attending"></div><div id = "atext"></div></a></li>
+			        <li><a href = "#guestlistmaybe" class = "ui-btn"><div id = "Maybe"></div><div id="mtext"></div></a></li>
+			        <li><a href = "#guestlistdecline" class = "ui-btn"><div id = "Noped"></div><div id = "ntext"></div></a></li>
+			    </ul>
+			</div><!-- /navbar -->
+
+			<!-- Line break -->
+			<br>
+
+			<div data-role = "content" class = "ui-content">
+				<div id = "DT" class = "ui-corner-all custom-corners">
+					<div class="ui-bar ui-bar-a">
+						<h3>Date and Time</h3>
+					</div>
+					<div class="ui-body ui-body-a">
+						<div id="rizi"></div>
+						<br>
+						<div id = "wanle"></div>
+					</div>
+				</div>
+
+				<style>
+					#wanle{
+						padding-bottom: 10px;
+					}
+
+					#rizi{
+						padding-top: 10px;
+					}
+				</style>
+
+				<br>
+
+				<div id = "map" class = "ui-corner-all custom-corners">
+					<div class="ui-bar ui-bar-a">
+						<h3>Location</h3>
+					</div>
+					<div class="ui-body ui-body-a">
+						<div id = "dizi"></div>
+					</div>
+				</div>
+				<a href="#" class="ui-btn" id = "containMap" onclick = "mapsRedirect();"><div id = "mappy"></div></a>
+				
+				<br>
+
+            	<div id = "headerpost">
+                	<h3 id = "headerasdf">Recent Posts</h3>
+                		<div class="posts"></div>
+            	</div>
+
+				<div class="container">
+					<h3>Wall Posts</h3>
+                    	<div class="form-group">
+                        	<textarea class="status-box" id="statusBox" placeholder="What's on your mind?"></textarea>
+                    	</div>
+
+                		<div class = "buttonForPost">
+                			<button class="ui-btn" id = "posting">Post</button>
+                		</div>
+            	</div>
+
+            	<br>
+            	
+            	<div id = "admin">
+            	</div>
+
+			</div> 						
 		</div>
     </body>
-</html>
+ </html>

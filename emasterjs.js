@@ -1,3 +1,17 @@
+function mapsRedirect() {
+	window.location.replace("comgooglemaps://?" + "&daddr=" + fieldScript[8] +"," + fieldScript[9] + "&directionsmode=driving");
+}
+
+function admin(){
+	$('#editIT').click(function(){
+		$('#pac-input').val(fieldScript[2]);
+		$('#comments').val(fieldScript[1]);
+		$('#name').val(fieldScript[0]);
+		$('#start').val(fieldScript[6]);
+		$('#end').val(fieldScript[7]);
+	});
+}
+
 var wallPosts = [0];
 var wallPostsID = [0];
 
@@ -85,8 +99,15 @@ var maybe = [0];
 var no = ["aoh0wjg0ewj"]; 
 
 //Shared Document API
+
 function Initializing(old, params) {
 	return params;
+}
+
+function fieldUpdate(old, params) {
+	old.fieldScript = params["fieldScript"];
+	return old;
+	console.log("updating fieldScript");
 }
 
 function wallUpdate(old, params) {
@@ -121,11 +142,12 @@ function Updateno(old, params){
 
 function InitialDocument() {
 	var initValues = {
-		"go": "",
+		"go" : "",
 		"maybe" : "",
 		"no" : "",
 		"wallPosts" : "",
 		"wallPostsID" : "",
+		"fieldScript" : "",
 	};
 	return initValues;
 }
@@ -136,17 +158,21 @@ function DocumentCreated(doc) {
 
 function ReceiveUpdate(doc) {
 	myDoc = doc;
+
 	for( key in myDoc)
 	{
 		console.log(key);
-	}
+	};
 
-	console.log("go: " + myDoc["go"]);
+	fieldScript = JSON.parse(myDoc["fieldScript"]);
+	LoadData();
+	mapsGeocode();
 	go = JSON.parse(myDoc["go"]);
 	maybe = JSON.parse(myDoc["maybe"]);
 	no = JSON.parse(myDoc["no"]);
 	wallPosts = JSON.parse(myDoc["wallPosts"]);
 	wallPostsID = JSON.parse(myDoc["wallPostsID"]);
+
 	loadwall();
 
 	$('#list_devices').children("ol").remove();
@@ -231,58 +257,49 @@ function _loadDocument() {
 }
 
 //Global Variables for Google Maps
-var maps;
-var geocoder;
+var map;
 
 //////////////////////////////
 ///// Google Places    ///////
 //////////////////////////////
 
-function initialize() {
+function mapsGeocode(){
 
- var input = document.getElementById('pac-input');
- var autocomplete = new google.maps.places.Autocomplete(input, options);
+		    url = GMaps.staticMapURL({
+			  size: [$(window).width()-190, $(window).width()-180],
+			  lat: fieldScript[8],
+			  lng: fieldScript[9],
+			  zoom: 13,
+			  markers: [
+			  	{lat: fieldScript[8], lng: fieldScript[9]}
+			  ]
+			});
 
-geocoder = new google.maps.Geocoder();
-
-  var mapOptions = {
-    zoom: 13,
-    center: new google.maps.LatLng(37.785285, -122.429177),
-    disableDefaultUI: true,
-    mapTypeId: google.maps.MapTypeId.ROADMAP,
-  };
- 
-map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+			$('<img/>').attr('src', url).appendTo('#mappy');
 
 }
 
-function codeAddress()
-{
-	var address = saving.place;
-	geocoder.geocode( { 'address': address}, function(results, status) { 
-		if( status == google.maps.GeocoderStatus.OK){
-			map.setCenter(results[0].geometry.location);
-			var marker = new google.maps.Marker({ 
-				map: map, 
-				position: results[0].geometry.location
-			});
-		}
-		else{
+function initialize() {
+	 var input = document.getElementById('pac-input');
+	 var autocomplete = new google.maps.places.Autocomplete(input);
 
-		}
-	});
+	google.maps.event.addListener(autocomplete, 'place_changed', function() {
+		 var place = autocomplete.getPlace();
+
+		 fieldScript[8] = place.geometry.location.lat();
+		 fieldScript[9] = place.geometry.location.lng(); 
+		});
 }
 
 //Load Data from shared RDL
 function LoadData()
 {
-	setPic();
-	details(saving.details);
-	nama(saving.name);
-	host("Hosted by: " + saving.host);
-	rizi(saving.greetings);
-	wanle(saving.goodbye);
-	dizi(saving.place);
+	details(fieldScript[1]);
+	nama(fieldScript[0]);
+	host("Hosted by: " + fieldScript[5]);
+	rizi(fieldScript[3]);
+	wanle(fieldScript[4]);
+	dizi(fieldScript[2]);
 	Attending(go.length-2);
 	atext("Attending");
 	Maybe(maybe.length -1);
@@ -291,7 +308,7 @@ function LoadData()
 	ntext("Declined");
 }
 
-function handleClick() {
+function handleClick(){
 	var goText = JSON.stringify(go);
 	var maybeText = JSON.stringify(maybe);
 	var noText = JSON.stringify(no);
@@ -303,15 +320,26 @@ function handleClick() {
 	// Update Arrays Accordingly through the Shared Document. 
     var wallUpdateText = JSON.stringify(wallPosts);
 	var wallPostsIDText = JSON.stringify(wallPostsID);
+
     documentApi.update( myDocId, wallUpdate, { 'wallPosts' : wallUpdateText } , ReceiveUpdate, DidNotReceiveUpdate);
 	documentApi.update( myDocId, wallID, { 'wallPostsID' : wallPostsIDText } , ReceiveUpdate, DidNotReceiveUpdate);
-}
+};
 
 
 //Sharing RDL Function
 function setUpShare() 
 {
 	$("#share").click(function() {
+		fieldScript[0] = $('#name').val();
+		fieldScript[1] = $('#comments').val();
+		fieldScript[2] = $('#pac-input').val();
+		fieldScript[3] = $('#refreshtime').text();
+		fieldScript[4] = $('#timebreak').text();
+		fieldScript[5] = userID["name"];
+
+		var fieldText = JSON.stringify(fieldScript);
+		documentApi.update( myDocId, fieldUpdate, { 'fieldScript' : fieldText } , ReceiveUpdate, DidNotReceiveUpdate );
+
 		ShareGame();
 	});
 
@@ -335,6 +363,9 @@ function timebreak( msgTxt )
 function datefunc() {
     var start = new Date (document.getElementById("start").value);
     var end = new Date(document.getElementById("end").value);
+
+    fieldScript[6] = (document.getElementById("start").value).substring(0,22);
+    fieldScript[7] = (document.getElementById("end").value).substring(0,22);
 
 	if (start == "" && end == ""){
 		return;
@@ -479,10 +510,6 @@ function datefunc() {
 		refreshtime("Start: " + nday + ", " + smonth + "/" + sdate + " at " + nhour + ":" + pmin + " " + pm);
 		timebreak("End: " + pday + ", " + emonth + "/" + edate + " at " + phour + ":" + nmin + ' ' + am );
 	}
-}
-
-function focusing(){
-	var input = document.getElementById("end").focus();
 }
 
 function coming()
@@ -733,35 +760,22 @@ function refreshData() {
 	Noped(no.length-1);
 }
 
-function reset(){
-     var t = $("#nav");
-     var offset = t.offset();
-         $(function() {
-              $(".holder").css("height" , offset.top);     
-           });
-}
+var fieldScript = [];
 
 //Sharing the game function. Saving data. 
 function ShareGame(event)
 {
 	var saving = {
-		name: $('#name').val(),
-		details: $('#comments').val(),
-		start: $('#start').val(),
-		end: $('#end').val(),
-		place: $('#pac-input').val(),
-		greetings: $('#refreshtime').text(),
-		goodbye: $('#timebreak').text(),
-		host: userID["name"],
 		sharedDocID: myDocId,
 		picturevar : picturevar[0],
+		host: userID["name"],
 	};
 
 	if(Omlet.isInstalled() )
 	{
 		var rdl = Omlet.createRDL({
 				   noun: "event",
-				   displayTitle: saving.name + " | EventMaster",
+				   displayTitle: fieldScript[0] + " | EventMaster",
 				   displayThumbnailUrl: "https://mobi-summer-evan.s3.amazonaws.com/Picture%20and%20Themes/Balloon.jpg",
 				   displayText: "You have been invited to an event! Attend?", 
 				   json: saving,
@@ -784,31 +798,27 @@ Omlet.ready(function() {
 
 	if(omletPackage)
 		{	
-			window.location.replace("#viewerdelight");
 			saving = omletPackage.json;
-			LoadData();
 			myDocId = saving["sharedDocID"];
-			picturevar[0] = saving["picturevar"];
 			initDocument();
-			viewerUser = Omlet.getIdentity();
+			picturevar[0] = saving["picturevar"];
 			setPic();
-			codeAddress();
+			viewerUser = Omlet.getIdentity();
 			status(); 
+			// if(saving["host"] == viewerUser["name"]){
+			// 	$('#admin').prepend("<div class='ui-bar ui-bar-a'><h3>Admin Corner</h3></div><div class='ui-body ui-body-a'><p>Only you can see this. Click the below button to edit any section of the event itinerary.</p><div class = 'buttonForAdmin'><a href= '#pageone' id = 'editIT' class='ui-btn'>Edit</a></div></div>");
+			// }
+			admin();
+			window.location.replace("#viewerdelight");
 		}
 		else
 		{
-			window.location.replace("#pageone");
 			userID = Omlet.getIdentity();
 			initDocument();
+			setUpShare();
 		}
 });
 
 $(document).ready(function(){
 	google.maps.event.addDomListener(window, 'load', initialize);
-	google.maps.event.addDomListener(window, "resize", function() {
-		var center = map.getCenter();
- 		google.maps.event.trigger(map, "resize");
- 		map.setCenter(center);
-	});
-	setUpShare();
 });
